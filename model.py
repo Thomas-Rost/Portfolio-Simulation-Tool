@@ -11,48 +11,54 @@ class Asset:
         self.quantity = quantity
         self.purchase_price = purchase_price
 
-    def transaction_value(self):
+    @property
+    def transaction_value(self) -> float:
         return self.quantity * self.purchase_price
-
-    def obtain_prices(self, start, end):
+    
+    def obtain_prices(self, start="2024-01-01", end="2026-04-20"):
         prices = yf.download(self.ticker, start=start, end=end, auto_adjust=True)["Close"].dropna()
+        if prices.empty:
+            raise ValueError(f"No price data found for ticker {self.ticker}.")
         return prices
-
-    def current_price(self):
+    
+    @property
+    def current_price(self) -> float:
         prices = self.obtain_prices(start="2024-01-01", end="2026-04-20")
-        return prices.iloc[-1]
+        return float(prices.iloc[-1])
 
-    def current_value(self):
-        return self.quantity * self.current_price()
+    @property
+    def current_value(self) -> float:
+        return self.quantity * self.current_price
 
 
 class Portfolio:
     def __init__(self):
         # Initialize as empty list, so you are free to construct any portfolio you like
-        self.assets = []
+        self.assets: list[Asset] = []
 
-    def add_asset(self, asset):
+    def add_asset(self, asset:Asset):
         self.assets.append(asset)
 
-    def get_df(self, start="2024-01-01", end="2026-04-20"):
+    def get_df(self, start="2024-01-01", end="2026-04-20") -> pd.DataFrame:
         tickers = [asset.ticker for asset in self.assets]
         prices = yf.download(tickers,start=start,end=end,auto_adjust=True)["Close"]
         return prices.dropna()
-
-    def total_transaction_value(self):
-        return sum(asset.transaction_value() for asset in self.assets)
     
+    @property
+    def total_transaction_value(self) -> float:
+        return sum(asset.transaction_value for asset in self.assets)
+    
+    @property
+    def total_current_value(self) -> float:
+        return sum(asset.current_value for asset in self.assets)
 
-    def total_current_value(self):
-        return sum(asset.current_value() for asset in self.assets)
-
-    def portfolio_table(self):
-        rows = []
+    def portfolio_table(self) -> pd.DataFrame:
+        rows: list[dict] = []
 
         for asset in self.assets:
-            current_price = float(asset.current_price())
+            current_price = asset.current_price
             current_value = asset.quantity * current_price
-            transaction_value = asset.transaction_value()
+            transaction_value = asset.transaction_value
 
             rows.append({
                 "Ticker": asset.ticker,
@@ -66,11 +72,15 @@ class Portfolio:
                 "P/L": current_value - transaction_value})
 
         df = pd.DataFrame(rows)
+
+        if df.empty:
+            return df
+        
         df["Weight"] = df["Current Value"] / df["Current Value"].sum()
 
         return df
 
-    def groupby_table(self, group_col):
+    def groupby_table(self, group_col:str) -> pd.DataFrame:
         '''
         group_col = 'Sector' or 'Asset Class' 
         '''
@@ -89,7 +99,7 @@ class Portfolio:
 
    
     
-    def simulate(self, start='2024-01-01', end = '2026-04-20',method="MVN",paths = 100_000, len_simulations = 252*15, seed_value = 10, block_size=20): 
+    def simulate(self, start='2024-01-01', end = '2026-04-20',method:str="MVN",paths:int = 10_000, len_simulations:int = 252*15, seed_value:int = 10, block_size:int=20): 
 
         # Obtain price series of all assets in the portfolio and compute returns
         prices = self.get_df(start = start, end = end) 
@@ -153,11 +163,9 @@ class Portfolio:
         return simulated_portfolio_returns, simulated_value_paths
     
     
-    def simulation_metrics(self, simulated_portfolio_returns,simulated_value_paths, rf=0.0, alpha=0.05):
+    def simulation_metrics(self, simulated_portfolio_returns:np.ndarray ,simulated_value_paths:np.ndarray, rf:float=0.0, alpha:float=0.05) -> pd.DataFrame:
         '''Analyzes the key statistics of the simulated return paths'''
         years = simulated_portfolio_returns.shape[1] / 252
-        table = self.portfolio_table() 
-        portfolio_value = table['Current Value'].sum()
         initial_value = simulated_value_paths[:, 0]
         final_value = simulated_value_paths[:, -1]
         cumulative_return = (final_value - initial_value)/ initial_value
