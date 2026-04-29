@@ -86,7 +86,7 @@ class PortfolioController:
 
         sim_returns, sim_values = self.portfolio.simulate(
             method=method,
-            paths=100_000,
+            paths=10_000,
             len_simulations=252 * 15
         )
 
