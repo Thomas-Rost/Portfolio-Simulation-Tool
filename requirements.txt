@@ -1,6 +1,6 @@
 pandas
 numpy
 matplotlib
-yfinance
+yfinance==0.2.40
 
 
