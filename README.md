@@ -2,19 +2,15 @@
 
 A Python command-line portfolio tracker and simulator built with a Model-View-Controller architecture.
 
-## How to Run the Project
+## How to run the project: 
+1. make a virtual environment:  python -m venv venv
+2. Activate the environment
+For macOS/Linux: source venv/bin/activate
+For Windows: venv\Scripts\activate
+3. Install dependencies pip install -r requirements.txt
+4. start the program on the terminal:  python main.py
 
-Clone the repository, install the required dependencies, and run the command-line application from `main.py`.
 
-in the terminal:
-git clone https://github.com/Thomas-Rost/Portfolio-Simulation-Tool.git
-cd Portfolio-Simulation-Tool
-
-python3 -m venv venv
-source venv/bin/activate
-
-pip install -r requirements.txt
-python main.py
 
 ## Features
 
