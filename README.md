@@ -3,7 +3,7 @@
 A Python command-line portfolio tracker and simulator built with a Model-View-Controller architecture.
 
 ## How to run the project: 
-1. make a virtual environment:  python -m venv venv
+1. make a virtual environment:  python -m venv env
 2. Activate the environment
 For macOS/Linux: source venv/bin/activate
 For Windows: venv\Scripts\activate
