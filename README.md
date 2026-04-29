@@ -2,7 +2,19 @@
 
 A Python command-line portfolio tracker and simulator built with a Model-View-Controller architecture.
 
-This project was created for the a.s.r. Vermogensbeheer Portfolio Tracker assignment. It lets users add assets, view portfolio tables, analyze sector and asset-class weights, plot historical prices, and simulate future portfolio values under uncertainty.
+## How to Run the Project
+
+Clone the repository, install the required dependencies, and run the command-line application from `main.py`.
+
+in the terminal:
+git clone https://github.com/Thomas-Rost/Portfolio-Simulation-Tool.git
+cd Portfolio-Simulation-Tool
+
+python3 -m venv venv
+source venv/bin/activate
+
+pip install -r requirements.txt
+python main.py
 
 ## Features
 
