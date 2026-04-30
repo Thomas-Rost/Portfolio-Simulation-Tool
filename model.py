@@ -99,7 +99,7 @@ class Portfolio:
 
    
     
-    def simulate(self, start='2024-01-01', end = '2026-04-20',method:str="MVN",paths:int = 10_000, len_simulations:int = 252*15, seed_value:int = 10, block_size:int=20): 
+    def simulate(self, start='2024-01-01', end = '2026-04-20',method:str="MVN",paths:int = 100_000, len_simulations:int = 252*15, seed_value:int = 10, block_size:int=20): 
 
         # Obtain price series of all assets in the portfolio and compute returns
         prices = self.get_df(start = start, end = end) 
